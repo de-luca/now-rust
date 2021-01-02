@@ -93,7 +93,7 @@ async function restoreCargoToml(cargoTomlFile: any) {
 }
 
 async function buildSingleFile(
-	{ entrypoint, meta = {} }: BuildOptions,
+	{ entrypoint, workPath, meta = {} }: BuildOptions,
 	downloadedFiles: DownloadedFiles,
 	extraFiles: DownloadedFiles,
 	rustEnv: Record<string, string>
@@ -146,12 +146,18 @@ async function buildSingleFile(
 	debug("Writing following toml to file:", tomlToWrite);
 	await fs.writeFile(cargoTomlFile, tomlToWrite);
 
+	const target = path.join(workPath, "target");
+
 	debug("Running `cargo build`...");
 	try {
 		await execa(
 			"cargo",
-			["build", "--bin", binName].concat(
-				builderDebug ? ["--verbose"] : ["--quiet", "--release"]
+			[
+				"build",
+				"--bin", binName,
+				"--target-dir", target,
+			].concat(
+				builderDebug ? ["--verbose"] : ["--release"]
 			),
 			{
 				env: rustEnv,
@@ -177,8 +183,7 @@ async function buildSingleFile(
 	const binExtension = process.platform === "win32" ? ".exe" : "";
 
 	const bin = path.join(
-		path.dirname(cargoTomlFile),
-		"target",
+		target,
 		builderDebug ? "debug" : "release",
 		binName + binExtension
 	);
@@ -200,6 +205,9 @@ async function buildSingleFile(
 }
 
 export async function build(opts: BuildOptions) {
+	console.log('---------------------------');
+	console.log(opts.meta);
+	console.log('---------------------------');
 	await installRustAndFriends();
 
 	const { files, entrypoint, workPath, config, meta = {} } = opts;
@@ -227,6 +235,7 @@ export async function prepareCache({
 	entrypoint,
 	workPath
 }: PrepareCacheOptions) {
+	console.log("----- CACHE -----");
 	debug("Preparing cache...");
 
 	let targetFolderDir: string;

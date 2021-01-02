@@ -1,0 +1,9 @@
+[package]
+name = "api"
+version = "0.0.0"
+edition = "2018"
+
+[dependencies]
+data = { path = "../data" }
+http = "0.1"
+vercel_lambda = "*"

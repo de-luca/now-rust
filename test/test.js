@@ -82,20 +82,24 @@ async function testFixture(fixture) {
 
 describe("vercel-rust", () => {
 
-	it("Deploy 01-include-files", async () => {
-		await testFixture("01-include-files");
-	});
+	// it("Deploy 01-include-files", async () => {
+	// 	await testFixture("01-include-files");
+	// });
 
-	it("Deploy 02-with-utility", async () => {
-		await testFixture("02-with-utility");
-	});
+	// it("Deploy 02-with-utility", async () => {
+	// 	await testFixture("02-with-utility");
+	// });
 
-	it("Deploy 03-with-function", async () => {
-		await testFixture("03-with-function");
-	});
+	// it("Deploy 03-with-function", async () => {
+	// 	await testFixture("03-with-function");
+	// });
 
-	it("Deploy 04-with-parameter", async () => {
-		await testFixture("04-with-parameter");
+	// it("Deploy 04-with-parameter", async () => {
+	// 	await testFixture("04-with-parameter");
+	// });
+
+	it("Deploy 05-workspace", async () => {
+		await testFixture("05-workspace");
 	});
 
 });
