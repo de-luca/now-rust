@@ -1,0 +1,46 @@
+name: Tests
+
+on:  
+  push:
+  pull_request:
+
+jobs:
+  runtime-tests:
+    name: Runtime tests
+    runs-on: ubuntu-latest
+    steps:
+      - name: Install Node
+        uses: actions/setup-node@v1
+        with:
+          node-version: 15
+      - name: Install Rust toolchain
+        uses: actions-rs/toolchain@v1
+        with:
+          profile: minimal
+          toolchain: stable
+
+      - name: Checkout code
+        uses: actions/checkout@v2
+      
+      - name: Restore npm cache
+        uses: actions/cache@v2
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+      - name: Restore cargo cache
+        uses: actions/cache@v2
+        with:
+          path: |
+            ~/.cargo/registry
+            ~/.cargo/git
+          key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
+      
+      - name: Install dependancies
+        run: npm install
+      - name: Build the runtime
+        run: npm run build
+      - name: Run tests
+        run: npm test
+        env:
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+        
